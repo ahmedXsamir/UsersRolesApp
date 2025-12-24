@@ -13,5 +13,15 @@ namespace UsersApp.Controllers
         {
             return View("Register");
         }
+
+        public IActionResult VerifyEmail()
+        {
+            return View("VerifyEmail");
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View("ChangePassword");
+        }
     }
 }

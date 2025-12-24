@@ -58,9 +58,32 @@ namespace UsersApp.Controllers
             return View("Login");
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userManager.FindByEmailAsync(model.Email).Result;
 
+                if (user != null)
+                {
+                    var result = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if (result)
+                    {
+                        await _signInManager.SignInAsync(user, model.RememberMe);
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
 
+                else
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View("Login", model);
+                }
+            }
+
+            return RedirectToAction("Login", model);
+        }
 
         public IActionResult VerifyEmail()
         {

@@ -1,4 +1,4 @@
-namespace UsersApp.Models
+﻿namespace UsersApp.Models
 {
     public class ErrorViewModel
     {

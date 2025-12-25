@@ -159,7 +159,7 @@ namespace UsersApp.Controllers
                     return View(model);
                 }
             }
-
+            ModelState.AddModelError("", "Something went wrong!");
             return View("ChangePassword", model);
         }
 
@@ -167,7 +167,7 @@ namespace UsersApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

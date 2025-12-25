@@ -131,12 +131,43 @@ namespace UsersApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model, string username)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.RemovePasswordAsync(user);
+                    if (result.Succeeded)
+                    {
+                        var newPassword = await _userManager.AddPasswordAsync(user, model.NewPassword);
+                        return RedirectToAction("Login", "Account");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View("ChangePassword", model);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("","Email not found!");
+                    return View(model);
+                }
             }
+
+            return View("ChangePassword", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

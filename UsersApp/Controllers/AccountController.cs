@@ -5,7 +5,7 @@ using UsersApp.ViewModels;
 
 namespace UsersApp.Controllers
 {
-    public class AccountController : Controller   
+    public class AccountController : Controller
     {
         private readonly SignInManager<Users> _signInManager;
         private readonly UserManager<Users> _userManager;
@@ -85,14 +85,49 @@ namespace UsersApp.Controllers
             return RedirectToAction("Login", model);
         }
 
+        [HttpGet]
         public IActionResult VerifyEmail()
         {
             return View("VerifyEmail");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> VerifyEmail(VerifyEmailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    // Email verification logic here
+                    // For example, generate a token and send it via email
+                    return RedirectToAction("ChangePassword", "Account", new { username = user.UserName });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Email not found.");
+                    return View("VerifyEmail", model);
+                }
+            }
+            else
+            {
+                return View("VerifyEmail", model);
+            }
+        }
+
+        [HttpGet]
         public IActionResult ChangePassword()
         {
             return View("ChangePassword");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model, string username)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
         }
     }
 }

@@ -116,9 +116,18 @@ namespace UsersApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult ChangePassword()
+        public IActionResult ChangePassword(string username)
         {
-            return View("ChangePassword");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("VerifyEmail", "Account");
+            }
+
+            else
+            {
+                return View("ChangePassword", new ChangePasswordViewModel { Email = username });
+            }
+            
         }
 
         [HttpPost]
